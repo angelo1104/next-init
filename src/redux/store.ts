@@ -1,9 +1,5 @@
-import {
-  combineReducers,
-  configureStore,
-  createReducer,
-} from "@reduxjs/toolkit";
-import { MakeStore, createWrapper, Context, HYDRATE } from "next-redux-wrapper";
+import { configureStore, createReducer } from "@reduxjs/toolkit";
+import { createWrapper, HYDRATE } from "next-redux-wrapper";
 import todoReducer from "./todoState";
 
 export interface State {
@@ -28,10 +24,6 @@ const reducer = createReducer(
     },
   },
 );
-const rootReducer = combineReducers({
-  todos: todoReducer,
-  tick: reducer,
-});
 
 const store = configureStore({
   reducer: {

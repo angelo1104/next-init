@@ -1,7 +1,7 @@
 import Head from "next/head";
 import styles from "../../styles/Home.module.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { State } from "../redux/store";
+import { State, wrapper } from "../redux/store";
 import { useEffect } from "react";
 import { todoActions } from "../redux/todoState";
 
@@ -88,3 +88,10 @@ export default function Home(): JSX.Element {
     </div>
   );
 }
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  ({ store, req, res, ...etc }) => {
+    console.log("2. Page.getServerSideProps uses the store to dispatch things");
+    store.dispatch({ type: "TICK", payload: "was set in other page" });
+  },
+);
