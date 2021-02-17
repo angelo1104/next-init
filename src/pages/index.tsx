@@ -1,7 +1,32 @@
 import Head from "next/head";
 import styles from "../../styles/Home.module.scss";
+import { useDispatch, useSelector } from "react-redux";
+import { State } from "../redux/store";
+import { useEffect } from "react";
+import { todoActions } from "../redux/todoState";
 
 export default function Home(): JSX.Element {
+  const state = useSelector((state: State) => state);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log("state", state);
+  }, [state]);
+
+  useEffect(() => {
+    dispatch({
+      type: "TICK",
+      payload: "hello",
+    });
+
+    dispatch(
+      todoActions.addTodo({
+        checked: false,
+        message: "Fix it felix",
+      }),
+    );
+  }, []);
+
   return (
     <div className={styles.container}>
       <Head>
