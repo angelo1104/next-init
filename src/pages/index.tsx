@@ -2,30 +2,15 @@ import Head from "next/head";
 import styles from "../../styles/Home.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { State, wrapper } from "../redux/store";
-import { useEffect } from "react";
-import { todoActions } from "../redux/todoState";
+import Image from "next/image";
+import { countActions } from "../redux/countReducer";
 
 export default function Home(): JSX.Element {
-  const state = useSelector((state: State) => state);
+  const {
+    count: { count, update },
+  } = useSelector((state: State) => state);
+
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    console.log("state", state);
-  }, [state]);
-
-  useEffect(() => {
-    dispatch({
-      type: "TICK",
-      payload: "hello",
-    });
-
-    dispatch(
-      todoActions.addTodo({
-        checked: false,
-        message: "Fix it felix",
-      }),
-    );
-  }, []);
 
   return (
     <div className={styles.container}>
@@ -35,63 +20,43 @@ export default function Home(): JSX.Element {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+        <Image src={"/nextjs-logo.png"} width={300} height={200} />
 
-        <p className={styles.description}>
-          Get started by editing{" "}
-          <code className={styles.code}>pages/index.tsx</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
+        <div className={styles.button_container}>
+          <button
+            className={styles.button}
+            onClick={() => {
+              dispatch(countActions.decrement(null));
+            }}
           >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
+            -
+          </button>
+          <p className={styles.count}>{count}</p>
+          <button
+            className={styles.button}
+            onClick={() => {
+              dispatch(countActions.increment(null));
+            }}
           >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+            +
+          </button>
         </div>
-      </main>
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by h
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+        <input
+          type="number"
+          className={styles.input}
+          value={update}
+          onChange={(event) => {
+            dispatch(countActions.setUpdate(parseFloat(event.target.value)));
+          }}
+        />
+      </main>
     </div>
   );
 }
 
 export const getServerSideProps = wrapper.getServerSideProps(
   ({ store, req, res, ...etc }) => {
-    console.log("2. Page.getServerSideProps uses the store to dispatch things");
-    store.dispatch({ type: "TICK", payload: "was set in other page" });
+    store.dispatch(countActions.setUpdate(2));
   },
 );
