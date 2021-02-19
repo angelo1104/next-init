@@ -1,6 +1,7 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
+  "extends": "aribnb",
   "parserOptions": {
     "ecmaFeatures": { "jsx": true }
   },
