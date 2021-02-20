@@ -4,13 +4,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { State, wrapper } from "../redux/store";
 import Image from "next/image";
 import { countActions } from "../redux/countReducer";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { useAuthUser, withAuthUser, withAuthUserTokenSSR } from 'next-firebase-auth'
+import { useEffect } from "react";
 
-export default function Home(): JSX.Element {
+function Home(): JSX.Element {
   const {
     count: { count, update },
   } = useSelector((state: State) => state);
 
   const dispatch = useDispatch();
+
+  const AuthUser = useAuthUser();
+
+  useEffect(() =>{
+    console.log("auther", AuthUser);
+  },[AuthUser])
 
   return (
     <div className={styles.container}>
@@ -55,8 +65,19 @@ export default function Home(): JSX.Element {
   );
 }
 
-export const getServerSideProps = wrapper.getServerSideProps(
-  ({ store, req, res, ...etc }) => {
-    store.dispatch(countActions.setUpdate(2));
-  },
-);
+export default Home;
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/ban-ts-comment
+// @ts-ignore
+export const getServerSideProps = withAuthUserTokenSSR({})(async ({ AuthUser }) => {
+  // Optionally, get other props.
+  const token = await AuthUser.getIdToken()
+  console.log(token);
+
+  return {
+    props: {
+      thing: token
+    }
+  }
+})
+

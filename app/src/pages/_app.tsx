@@ -2,6 +2,12 @@ import "../../styles/globals.scss";
 import { AppProps } from "next/app";
 import { wrapper } from "../redux/store";
 import Head from "next/head";
+import initAuth from "../firebase/initAuth";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { withAuthUser } from 'next-firebase-auth'
+
+initAuth()
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
@@ -18,4 +24,4 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   );
 }
 
-export default wrapper.withRedux(MyApp);
+export default wrapper.withRedux(withAuthUser()(MyApp));
